@@ -22,7 +22,7 @@ Ein **Rule Intelligence MCP**-Tool (Node.js + TypeScript) zur Analyse, Validieru
 
 ```bash
 # Repository klonen
-git clone https://github.com/dein-org/rule-intelligence-mcp.git
+git clone https://github.com/micha-gh/rule-intelligence-mcp.git
 cd rule-intelligence-mcp
 
 # Abhängigkeiten installieren
