@@ -7,7 +7,7 @@
     "start": "ts-node index.ts",
     "dev": "ts-node-dev --respawn index.ts"
   },
-  "author": "",
+  "author": "Michael Tittmar",
   "license": "MIT",
   "dependencies": {
     "ajv": "^8.11.0",
