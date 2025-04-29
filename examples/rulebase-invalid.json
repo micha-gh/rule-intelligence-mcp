@@ -1,0 +1,20 @@
+[
+  {
+    "id": 123,
+    "title": "No category",
+    "content": "Missing category field.",
+    "status": "active"
+  },
+  {
+    "title": "No ID",
+    "category": "Testing",
+    "content": "Missing id field."
+  },
+  {
+    "id": "rule-3",
+    "title": "Wrong type for tags",
+    "category": "Testing",
+    "content": "Tags should be array, not string.",
+    "tags": "should-be-array"
+  }
+] 

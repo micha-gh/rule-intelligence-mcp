@@ -1,172 +1,248 @@
-# rule-intelligence-mcp
+# Rule Intelligence MCP – Universal Rulebase Analyzer
 
-A **Rule Intelligence MCP** tool (Node.js + TypeScript) for analyzing, validating, and managing rulebases (JSON) via a simple CLI.
+**Author:** Michael Tittmar
+
+---
+
+## Overview
+
+**Rule Intelligence MCP** is an open-source, extensible CLI and library to analyze, validate, and manage rulebases of any kind – for any language, team, or workflow. It supports custom schemas, flexible formats, plugins, LLM integration, and more.
+
+---
 
 ## Features
 
-- Analyze rulebases for missing categories, duplicate titles, and empty contents
-- Validate against a JSON schema (AJV)
-- Output results as JSON or Markdown
-- Interactive rule editing via CLI commands
-- Automated rule suggestions via OpenAI LLM
-- Watch mode for live analysis on file changes
-- Memory bank for storing interactions (`memory:list`, `memory:clear`)
+- Analyze rulebases for missing categories, duplicate rules, empty content, and more
+- Validate against any JSON schema (fully configurable)
+- Filter rules by status, tags, or custom fields
+- Output as JSON, Markdown, CSV, or HTML
+- Interactive rule editing via CLI
+- Memory bank for audit trail and LLM context
+- LLM integration (OpenAI, Azure, local, ...)
+- Watch mode for live analysis (optional)
+- Plugin system for custom checks (JavaScript)
+- Flexible input: JSON, YAML, TOML, Markdown (optional dependencies)
+- Fully tested (unit/integration), CI-ready
+
+---
 
 ## Quickstart
 
 ### Prerequisites
-
 - Node.js ≥ 14
 - npm or yarn
 
 ### Installation
-
 ```bash
-# Clone the repository
 git clone https://github.com/micha-gh/rule-intelligence-mcp.git
 cd rule-intelligence-mcp
-
-# Install dependencies
 npm install
 ```
 
-### Development & Run
+---
 
-```bash
-# Development mode with auto-reload
-npm run dev -- analyze
-
-# Production / Start
-npm start -- analyze
-```
-
-## CLI Commands
-
-All commands are exposed via the `rule-intelligence-mcp` binary (alias: `npm start -- <command>`):
+## CLI Usage
 
 ```bash
 rule-intelligence-mcp <command> [options]
 ```
 
-### Global Options
+### Common CLI Options
 
-- `-r, --rulebase <path>`  Path to the rulebase JSON file (default: `rulebase-sample.json`)
-- `-s, --schema <path>`     Path to the JSON schema file (default: `rule-schema.json`)
-- `-f, --format <json|md>`  Output format: JSON or Markdown (default: `json`)
-- `--status <status>`       Filter rules by status (e.g. active, deprecated)
-- `--tag <tag>`             Filter rules by tag (comma-separated for multiple)
+| Option                | Description                                                      | Example                                  |
+|----------------------|------------------------------------------------------------------|------------------------------------------|
+| `-r, --rulebase`     | Path to rulebase file (JSON/YAML/TOML/MD)                        | `-r rules.json`                          |
+| `-s, --schema`       | Path to JSON schema file                                         | `-s my-schema.json`                      |
+| `--format-in`        | Input format: json, yaml, toml, md (auto by extension)            | `--format-in yaml`                       |
+| `-o, --output`       | Output format: json, md, csv, html                               | `--output csv`                           |
+| `--status`           | Filter rules by status                                           | `--status active`                        |
+| `--tag`              | Filter rules by tag(s), comma-separated                          | `--tag security,style`                   |
+| `--plugin`           | Path to JS plugin for custom analysis                            | `--plugin ./plugins/my-check.js`         |
+| `--llm-provider`     | LLM provider (openai, azure, local, ...)                         | `--llm-provider openai`                  |
+| `--llm-api-url`      | LLM API base URL (for custom providers)                          | `--llm-api-url https://api.example.com`  |
+| `--llm-model`        | LLM model name                                                  | `--llm-model gpt-4`                      |
+| `--memory`           | Path to memory bank file                                         | `--memory .data/mem.json`                |
 
-### Commands & Examples
+---
 
-#### analyze
-Analyze the rulebase and display statistics. Supports filtering by status and tags.
+### Example Commands
+
 ```bash
-rule-intelligence-mcp analyze -r rulebase.json --status active
-rule-intelligence-mcp analyze -r rulebase.json --tag php
-rule-intelligence-mcp analyze -r rulebase.json --tag php,style --status active
-rule-intelligence-mcp analyze --rulebase rulebase.json --format md
+# Analyze your rulebase (auto-detects format by extension)
+rule-intelligence-mcp analyze -r myrules.json --output md
+rule-intelligence-mcp analyze -r myrules.yaml --format-in yaml --output csv
+rule-intelligence-mcp analyze -r myrules.json --plugin ./plugins/example-plugin.js --output json
+
+# Edit a rule
+rule-intelligence-mcp edit rule-2 --title "Use parameterized queries"
+
+# Show memory bank
+rule-intelligence-mcp memory:list --memory .data/mem.json
+
+# LLM suggestions (optional, install openai or your provider)
+npm install openai
+rule-intelligence-mcp suggest -r myrules.json --llm-provider openai --llm-model gpt-3.5-turbo
+
+# Watch mode (optional, install chokidar)
+npm install chokidar
+rule-intelligence-mcp watch -r myrules.json
 ```
 
-#### validate
-Validate the rulebase against the JSON schema.
-```bash
-rule-intelligence-mcp validate -r rulebase.json -s rule-schema.json
-```
+---
 
-#### edit <id>
-Update an existing rule by its ID. This also logs the edit to the memory bank.
-```bash
-rule-intelligence-mcp edit rule-2 --title "Use parameterized queries" --severity high --tags security,database
-```
+## Flexible Schema & Rulebase Format
+- Use any JSON schema for validation (`--schema my-schema.json`)
+- Rulebase can be JSON, YAML, TOML, or Markdown (with frontmatter)
+- Auto-detects format by file extension, or set with `--format-in`
+- Example for YAML: `rule-intelligence-mcp analyze -r rules.yaml --format-in yaml`
+- Example for Markdown: `rule-intelligence-mcp analyze -r rules.md --format-in md`
 
-#### suggest
-Request new rule suggestions via the OpenAI LLM. Suggestions are logged to the memory bank.
-```bash
-# Requires OPENAI_API_KEY environment variable
-rule-intelligence-mcp suggest -r rulebase.json
-```
+---
 
-#### watch
-Watch the rulebase file and re-run analysis on changes.
-```bash
-rule-intelligence-mcp watch -r rulebase.json
-```
+## Output Formats
+- `--output json` (default)
+- `--output md` (Markdown)
+- `--output csv` (CSV table)
+- `--output html` (HTML report)
 
-#### memory:list
-List stored interaction history (suggestions, edits).
-```bash
-rule-intelligence-mcp memory:list --limit 5
-```
+---
 
-#### memory:clear
-Clear the memory bank and remove all stored interactions.
-```bash
-rule-intelligence-mcp memory:clear
-```
+## Plugins: Custom Analysis
+- Add your own checks as a JS file: `--plugin ./my-check.js`
+- Plugin receives the rulebase and current analysis as input, returns an object to merge into the output
+- See `plugins/example-plugin.js` for a template
+- Example: Count deprecated rules and add to output
+
+---
+
+## LLM Provider Configuration
+- Use any LLM provider: OpenAI, Azure, local, etc.
+- Flags: `--llm-provider`, `--llm-api-url`, `--llm-model`
+- Example: `rule-intelligence-mcp suggest --llm-provider openai --llm-model gpt-4`
+- Install the required package for your provider (see docs)
+- Set API keys as environment variables (e.g. `OPENAI_API_KEY`)
+
+---
 
 ## Memory Bank
-- The memory bank (`memory.json`) stores all `edit` and `suggest` interactions with timestamps.
-- Use `memory:list` to review history and `memory:clear` to reset.
-- Useful for audit trails and LLM context.
+- Stores all `edit` and `suggest` interactions with timestamps
+- Configurable location and backend (`--memory memory.json`, `--memory .data/mem.json`)
+- Use `memory:list` and `memory:clear` to manage
 
-## OpenAI API Key
-- The `suggest` command requires an OpenAI API key.
-- Set it via environment variable: `export OPENAI_API_KEY=sk-...`
-- If not set, the suggest integration test is skipped.
+---
 
-## Testing
-- Run all tests (unit + integration):
-  ```bash
-  npm test
-  ```
-- Tests cover:
-  - Core analysis logic (`lib/analyze.test.ts`)
-  - CLI commands and memory bank (`lib/cli.integration.test.ts`)
-  - LLM suggest (if API key is set)
+## Testing & CI
+- Run all tests: `npm test`
+- Coverage: `npm test -- --coverage`
+- GitHub Actions workflow in `.github/workflows/ci.yml`
 
-## Using Your Own Rulebase
-- Copy `rulebase-sample.json` and edit as needed.
-- Validate with:
-  ```bash
-  rule-intelligence-mcp validate -r myrules.json
-  ```
-- Analyze with:
-  ```bash
-  rule-intelligence-mcp analyze -r myrules.json
-  ```
+---
 
-## Error Handling
-- Invalid rulebases or schema errors are shown in the CLI with details.
-- Example:
-  ```
-  Rulebase validation failed:
-  [ { instancePath: '/0', message: 'must have required property ...' } ]
-  ```
-- Fix your JSON or schema and re-run the command.
+## Testing with Example Rulebases, Schemas, and Plugins
 
-## Project Structure
-```
-rule-intelligence-mcp/
-├── index.ts                 # CLI entry point
-├── rule-schema.json         # JSON schema for the rulebase
-├── rulebase-sample.json     # Sample rulebase
-├── memory.json              # Memory bank storage (auto-generated)
-├── lib/
-│   ├── analyze.ts           # Analysis and validation functions
-│   ├── memory.ts            # Memory storage for interactions
-│   ├── analyze.test.ts      # Unit tests for analysis
-│   └── cli.integration.test.ts # Integration tests for CLI
-├── tsconfig.json            # TypeScript configuration
-├── package.json             # Node project metadata & scripts
-├── LICENSE                  # License
-└── README.md                # This documentation
+The `examples/` and `plugins/` folders contain ready-to-use files for testing and learning:
+
+### Example Rulebases
+- `examples/rulebase-minimal.json` – Minimal valid rulebase
+- `examples/rulebase-complex.yaml` – Complex rulebase with edge cases (duplicates, deprecated, missing fields)
+- `examples/rulebase-invalid.json` – Invalid rulebase for validation testing
+- `examples/rulebase-markdown.md` – Rulebase in Markdown frontmatter
+
+### Example Schemas
+- `rule-schema.json` – Standard schema
+- `examples/rule-schema-custom.json` – Custom schema with extra fields
+
+### Example Plugins
+- `plugins/example-plugin.js` – Counts deprecated rules
+- `plugins/conflict-check.js` – Finds conflicting rules (e.g. allow/forbid)
+
+### How to Test
+
+```bash
+# Validate a minimal rulebase
+rule-intelligence-mcp validate -r examples/rulebase-minimal.json
+
+# Analyze a complex YAML rulebase
+rule-intelligence-mcp analyze -r examples/rulebase-complex.yaml --format-in yaml --output md
+
+# Validate an invalid rulebase (should show errors)
+rule-intelligence-mcp validate -r examples/rulebase-invalid.json
+
+# Analyze a Markdown rulebase
+rule-intelligence-mcp analyze -r examples/rulebase-markdown.md --format-in md --output json
+
+# Use a custom schema
+rule-intelligence-mcp validate -r examples/rulebase-minimal.json --schema examples/rule-schema-custom.json
+
+# Run with a plugin (conflict check)
+rule-intelligence-mcp analyze -r examples/rulebase-complex.yaml --format-in yaml --plugin plugins/conflict-check.js --output json
 ```
 
-## Contributing
-1. Fork the repository
-2. Create a branch named `feature/...`
-3. Implement your changes and write unit tests
-4. Open a pull request
+### Automated Example Testing
+
+You can run all example tests automatically:
+
+```bash
+bash test/examples.test.sh
+```
+
+### Example Test Matrix
+
+| Datei                                 | Erwartetes Ergebnis      | Testbefehl                                                                 |
+|---------------------------------------|-------------------------|----------------------------------------------------------------------------|
+| rulebase-minimal.json                 | valid                   | validate -r examples/rulebase-minimal.json                                 |
+| rulebase-markdown.md                  | valid                   | validate -r examples/rulebase-markdown.md --format-in md                   |
+| rulebase-minimal.json + custom-schema | valid                   | validate -r examples/rulebase-minimal.json --schema examples/rule-schema-custom.json |
+| analyze + conflict-check plugin       | valid                   | analyze -r examples/rulebase-complex.yaml --format-in yaml --plugin plugins/conflict-check.js --output json |
+
+### Error Test Matrix
+
+| Datei                                 | Erwartetes Ergebnis      | Testbefehl                                                                 |
+|---------------------------------------|-------------------------|----------------------------------------------------------------------------|
+| rulebase-invalid.json                 | invalid (Fehler)        | validate -r examples/rulebase-invalid.json                                 |
+| rulebase-complex.yaml                 | invalid (Fehler)        | validate -r examples/rulebase-complex.yaml --format-in yaml                |
+
+**Hinweis:**
+- Für Markdown-Rulebases (`.md`) wird das Paket `gray-matter` benötigt: `npm install gray-matter`
+- Für das Custom-Schema mit `format: "date"` kann Ajv (der Validator) eine Warnung ausgeben, dass das Format unbekannt ist. Das beeinträchtigt die Validierung nicht, kann aber mit einem Ajv-Plugin für zusätzliche Formate gelöst werden (siehe [Ajv-Doku](https://ajv.js.org/)).
+
+---
+
+## Library/API Usage
+
+You can use all core functions as a Node.js/TypeScript library:
+
+```ts
+import { findDuplicateTitles, validateRulebase, formatMarkdown, loadHistory } from 'rule-intelligence-mcp/lib';
+
+const rules = [/* ... */];
+const duplicates = findDuplicateTitles(rules);
+const { valid, errors } = validateRulebase(rules, './my-schema.json');
+console.log(formatMarkdown({
+  totalRules: rules.length,
+  missingCategories: [],
+  duplicateTitles: duplicates,
+  emptyContents: [],
+  categoryStats: { /* ... */ }
+}));
+
+const mem = loadHistory(10, './my-mem.json');
+```
+
+---
+
+## FAQ
+
+**Q: What if I want to use a different LLM or memory backend?**  
+A: Just install the required package and use the appropriate CLI flags (`--llm-provider`, `--llm-api-url`, `--memory`).
+
+**Q: Can I add my own analysis logic?**  
+A: Yes! Use the `--plugin` flag and provide a JS file that exports a function.
+
+**Q: How do I contribute a new format, plugin, or translation?**  
+A: Open a PR or issue – contributions are welcome!
+
+---
 
 ## License
 MIT © Michael Tittmar
@@ -195,3 +271,30 @@ The base install is minimal and only includes core analysis, validation, editing
   npm test -- --coverage
   open coverage/lcov-report/index.html
   ```
+
+## Library/API Usage
+
+You can use all core functions as a Node.js/TypeScript library:
+
+```ts
+import { findDuplicateTitles, validateRulebase, formatMarkdown, loadHistory } from 'rule-intelligence-mcp/lib';
+
+const rules = [/* ... */];
+const duplicates = findDuplicateTitles(rules);
+const { valid, errors } = validateRulebase(rules, './my-schema.json');
+console.log(formatMarkdown({
+  totalRules: rules.length,
+  missingCategories: [],
+  duplicateTitles: duplicates,
+  emptyContents: [],
+  categoryStats: { /* ... */ }
+}));
+
+const mem = loadHistory(10, './my-mem.json');
+```
+
+## Integration with Cursor AI
+
+You can use Rule Intelligence MCP as a Custom Tool in [Cursor AI](https://www.cursor.so/). This allows you to analyze and validate rulebases directly from your IDE.
+
+See the full guide here: [docs/cursor-integration.md](docs/cursor-integration.md)

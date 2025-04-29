@@ -85,4 +85,43 @@ export function formatMarkdown(result: AnalysisResult): string {
     md += `\n`;
   }
   return md;
+}
+
+export function formatCSV(result: AnalysisResult): string {
+  let csv = 'Category,Count\n';
+  for (const [cat, cnt] of Object.entries(result.categoryStats)) {
+    csv += `"${cat}",${cnt}\n`;
+  }
+  return csv;
+}
+
+export function formatHTML(result: AnalysisResult): string {
+  let html = `<h1>Rulebase Analysis</h1>`;
+  html += `<ul>`;
+  html += `<li>Total Rules: <b>${result.totalRules}</b></li>`;
+  html += `<li>Missing Categories: <b>${result.missingCategories.length}</b></li>`;
+  html += `<li>Duplicate Titles: <b>${result.duplicateTitles.length}</b></li>`;
+  html += `<li>Empty Contents: <b>${result.emptyContents.length}</b></li>`;
+  html += `</ul>`;
+  html += `<h2>Category Stats</h2><table border='1'><tr><th>Category</th><th>Count</th></tr>`;
+  for (const [cat, cnt] of Object.entries(result.categoryStats)) {
+    html += `<tr><td>${cat}</td><td>${cnt}</td></tr>`;
+  }
+  html += `</table>`;
+  if (result.missingCategories.length) {
+    html += `<h3>Rules with Missing Categories</h3><ul>`;
+    result.missingCategories.forEach(r => { html += `<li>[${r.id}] ${r.title}</li>`; });
+    html += `</ul>`;
+  }
+  if (result.duplicateTitles.length) {
+    html += `<h3>Rules with Duplicate Titles</h3><ul>`;
+    result.duplicateTitles.forEach(r => { html += `<li>[${r.id}] ${r.title}</li>`; });
+    html += `</ul>`;
+  }
+  if (result.emptyContents.length) {
+    html += `<h3>Rules with Empty Contents</h3><ul>`;
+    result.emptyContents.forEach(r => { html += `<li>[${r.id}] ${r.title}</li>`; });
+    html += `</ul>`;
+  }
+  return html;
 } 
