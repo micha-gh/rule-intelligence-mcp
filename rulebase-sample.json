@@ -1,0 +1,26 @@
+[
+  {
+    "id": "rule-1",
+    "title": "Use PSR-12",
+    "category": "Coding Style",
+    "content": "PHP code should follow PSR-12 coding standard."
+  },
+  {
+    "id": "rule-2",
+    "title": "Use prepared statements",
+    "category": "Security",
+    "content": "Use prepared statements for database queries."
+  },
+  {
+    "id": "rule-3",
+    "title": "Use PSR-12",
+    "category": "Coding Style",
+    "content": ""
+  },
+  {
+    "id": "rule-4",
+    "title": "Optimize images",
+    "category": "",
+    "content": "Compress images to reduce payload."
+  }
+] 
