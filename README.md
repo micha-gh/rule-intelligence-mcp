@@ -128,8 +128,10 @@ rule-intelligence-mcp/
 ├── index.ts             # CLI-Entrypoint
 ├── rule-schema.json     # JSON-Schema für Rulebase
 ├── rulebase-sample.json # Beispiel-Rulebase
+├── memory.json          # Speicherung der Memory-Bank (auto-generiert)
 ├── lib/
-│   └── analyze.ts       # Analyse- und Validierungsfunktionen
+│   ├── analyze.ts       # Analyse- und Validierungsfunktionen
+│   └── memory.ts        # Memory-Storage für Interaktionen
 ├── tsconfig.json        # TypeScript-Konfiguration
 ├── package.json         # Node-Projektmetadaten & Skripte
 └── README.md            # Diese Dokumentation
@@ -144,4 +146,4 @@ rule-intelligence-mcp/
 
 ## License
 
-MIT © Dein Name oder Organisation 
+MIT © Michael Tittmar
