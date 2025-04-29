@@ -1,78 +1,80 @@
 # rule-intelligence-mcp
 
-Ein **Rule Intelligence MCP**-Tool (Node.js + TypeScript) zur Analyse, Validierung und Verwaltung von Rulebases (JSON) über eine einfache CLI.
+A **Rule Intelligence MCP** tool (Node.js + TypeScript) for analyzing, validating, and managing rulebases (JSON) via a simple CLI.
 
 ## Features
 
-- Analysiert Rulebases auf fehlende Kategorien, doppelte Titel und leere Inhalte
-- JSON-Schema-Validierung via AJV
-- Ausgabe als JSON oder Markdown
-- Interaktives Editieren von Regeln per CLI
-- Automatisierte Regel-Suggestions via OpenAI LLM
-- Watch-Modus zur Live-Analyse bei Dateiänderungen
-- Memory-Bank zur Speicherung von Interaktionen (memory:list, memory:clear)
+- Analyze rulebases for missing categories, duplicate titles, and empty contents
+- Validate against a JSON schema (AJV)
+- Output results as JSON or Markdown
+- Interactive rule editing via CLI commands
+- Automated rule suggestions via OpenAI LLM
+- Watch mode for live analysis on file changes
+- Memory bank for storing interactions (`memory:list`, `memory:clear`)
 
 ## Quickstart
 
-### 1. Voraussetzungen
+### Prerequisites
 
 - Node.js ≥ 14
-- npm oder yarn
+- npm or yarn
 
-### 2. Installation
+### Installation
 
 ```bash
-# Repository klonen
+# Clone the repository
 git clone https://github.com/micha-gh/rule-intelligence-mcp.git
 cd rule-intelligence-mcp
 
-# Abhängigkeiten installieren
+# Install dependencies
 npm install
 ```
 
-### 3. Kompilierung & Dev-Mode
+### Development & Run
 
 ```bash
-# Entwicklermodus mit automatischem Reload
+# Development mode with auto-reload
 npm run dev -- analyze
 
-# Produktion / Start
+# Production / Start
 npm start -- analyze
 ```
 
-## CLI-Befehle
+## CLI Commands
 
-Alle Befehle werden über das bin-Skript `rule-intelligence-mcp` (alias `npm start -- <cmd>`) ausgeführt.
+All commands are exposed via the `rule-intelligence-mcp` binary (alias: `npm start -- <command>`):
 
 ```bash
 rule-intelligence-mcp <command> [options]
 ```
 
-### Globale Optionen
+### Global Options
 
-- `-r, --rulebase <path>`  Pfad zur Rulebase-JSON (default: `rulebase-sample.json`)
-- `-s, --schema <path>`     JSON-Schema-Datei (default: `rule-schema.json`)
-- `-f, --format <json|md>`  Ausgabeformat JSON oder Markdown (default: `json`)
+- `-r, --rulebase <path>`  Path to the rulebase JSON file (default: `rulebase-sample.json`)
+- `-s, --schema <path>`     Path to the JSON schema file (default: `rule-schema.json`)
+- `-f, --format <json|md>`  Output format: JSON or Markdown (default: `json`)
 
-### Befehle
+### Commands
 
 #### analyze
-Analysiert die Rulebase und gibt Statistik zurück.
+
+Analyze the rulebase and display statistics.
 
 ```bash
-# JSON-Ausgabe (Standard)
+# JSON output (default)
 rule-intelligence-mcp analyze \
   -r rulebase.json \
   -f json
 
-# Markdown-Report
+# Markdown report
 rule-intelligence-mcp analyze \
-  --rulebase rules.json \
+  --rulebase rulebase.json \
   --format md
 ```
 
 #### validate
-Validiert die Rulebase gegen das JSON-Schema.
+
+Validate the rulebase against the JSON schema.
 
 ```bash
 rule-intelligence-mcp validate \
@@ -81,7 +83,8 @@ rule-intelligence-mcp validate \
 ```
 
 #### edit <id>
-Aktualisiert eine bestehende Regel anhand ihrer ID.
+
+Update an existing rule by its ID.
 
 ```bash
 rule-intelligence-mcp edit rule-2 \
@@ -91,7 +94,8 @@ rule-intelligence-mcp edit rule-2 \
 ```
 
 #### suggest
-Fragt das OpenAI LLM nach Vorschlägen für neue Regeln.
+
+Request new rule suggestions via the OpenAI LLM.
 
 ```bash
 rule-intelligence-mcp suggest \
@@ -99,7 +103,8 @@ rule-intelligence-mcp suggest \
 ```
 
 #### watch
-Beobachtet die Rulebase-Datei und führt bei jeder Änderung eine Analyse aus.
+
+Watch the rulebase file and re-run analysis on changes.
 
 ```bash
 rule-intelligence-mcp watch \
@@ -107,7 +112,8 @@ rule-intelligence-mcp watch \
 ```
 
 #### memory:list
-Listet gespeicherte Memory-Interaktionen (z.B. Vorschläge und Edits).
+
+List stored interaction history (suggestions, edits).
 
 ```bash
 rule-intelligence-mcp memory:list \
@@ -115,34 +121,35 @@ rule-intelligence-mcp memory:list \
 ```
 
 #### memory:clear
-Leert die Memory-Bank und entfernt alle gespeicherten Interaktionen.
+
+Clear the memory bank and remove all stored interactions.
 
 ```bash
 rule-intelligence-mcp memory:clear
 ```
 
-## Projektstruktur
+## Project Structure
 
 ```
 rule-intelligence-mcp/
-├── index.ts             # CLI-Entrypoint
-├── rule-schema.json     # JSON-Schema für Rulebase
-├── rulebase-sample.json # Beispiel-Rulebase
-├── memory.json          # Speicherung der Memory-Bank (auto-generiert)
+├── index.ts             # CLI entry point
+├── rule-schema.json     # JSON schema for the rulebase
+├── rulebase-sample.json # Sample rulebase
+├── memory.json          # Memory bank storage (auto-generated)
 ├── lib/
-│   ├── analyze.ts       # Analyse- und Validierungsfunktionen
-│   └── memory.ts        # Memory-Storage für Interaktionen
-├── tsconfig.json        # TypeScript-Konfiguration
-├── package.json         # Node-Projektmetadaten & Skripte
-└── README.md            # Diese Dokumentation
+│   ├── analyze.ts       # Analysis and validation functions
+│   └── memory.ts        # Memory storage for interactions
+├── tsconfig.json        # TypeScript configuration
+├── package.json         # Node project metadata & scripts
+└── README.md            # This documentation
 ```
 
 ## Contributing
 
-1. Forke das Repo
-2. Erstelle einen Branch `feature/...`
-3. Implementiere deine Änderungen und schreibe Unit-Tests
-4. Öffne einen Pull Request
+1. Fork the repository
+2. Create a branch named `feature/...`
+3. Implement your changes and write unit tests
+4. Open a pull request
 
 ## License
 
