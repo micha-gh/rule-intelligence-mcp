@@ -170,3 +170,28 @@ rule-intelligence-mcp/
 
 ## License
 MIT © Michael Tittmar
+
+## Optional Features & Installation
+
+Some features require extra dependencies. They are only needed if you use the corresponding command:
+
+- **LLM Suggest (`suggest` command):**
+  - Requires: `openai`
+  - Install with: `npm install openai`
+- **Watch Mode (`watch` command):**
+  - Requires: `chokidar`
+  - Install with: `npm install chokidar`
+
+If you run a command and the dependency is missing, you will get a clear error message with the install command.
+
+The base install is minimal and only includes core analysis, validation, editing, and memory features.
+
+## Continuous Integration & Coverage
+
+- Every push and pull request on `main` runs all tests automatically via GitHub Actions (see `.github/workflows/ci.yml`).
+- Coverage is reported with Jest and can be uploaded to Codecov.
+- To check coverage locally:
+  ```bash
+  npm test -- --coverage
+  open coverage/lcov-report/index.html
+  ```

@@ -4,8 +4,6 @@ import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 import path from 'path';
 import fs from 'fs';
-import chokidar from 'chokidar';
-import OpenAI from 'openai';
 import {
   loadRulebase,
   validateRulebase,
@@ -143,6 +141,13 @@ const argv = yargs(hideBin(process.argv))
     async args => {
       const rb = loadRulebase(args.rulebase as string);
       const history = loadHistory(5);
+      let OpenAI;
+      try {
+        OpenAI = require('openai');
+      } catch {
+        console.error('The "openai" package is required for this feature. Install it with: npm install openai');
+        process.exit(1);
+      }
       const openai = new OpenAI();
       let prompt = history.length
         ? `Previous interactions: ${JSON.stringify(history, null, 2)}\n\nHere is the current rulebase: ${JSON.stringify(rb, null, 2)}`
@@ -170,6 +175,13 @@ const argv = yargs(hideBin(process.argv))
     'Watch rulebase file and re-run analysis on change',
     () => {},
     args => {
+      let chokidar;
+      try {
+        chokidar = require('chokidar');
+      } catch {
+        console.error('The "chokidar" package is required for this feature. Install it with: npm install chokidar');
+        process.exit(1);
+      }
       const file = args.rulebase as string;
       console.log(`Watching ${file} for changes...`);
       chokidar.watch(file).on('change', () => {
