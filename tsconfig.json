@@ -10,7 +10,7 @@
     "strict": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-    "types": ["node"]
+    "types": ["node", "jest"]
   },
   "include": ["index.ts", "lib/**/*.ts"],
   "exclude": ["node_modules", "dist"]

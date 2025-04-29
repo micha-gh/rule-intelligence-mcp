@@ -53,104 +53,120 @@ rule-intelligence-mcp <command> [options]
 - `-r, --rulebase <path>`  Path to the rulebase JSON file (default: `rulebase-sample.json`)
 - `-s, --schema <path>`     Path to the JSON schema file (default: `rule-schema.json`)
 - `-f, --format <json|md>`  Output format: JSON or Markdown (default: `json`)
+- `--status <status>`       Filter rules by status (e.g. active, deprecated)
+- `--tag <tag>`             Filter rules by tag (comma-separated for multiple)
 
-### Commands
+### Commands & Examples
 
 #### analyze
-
-Analyze the rulebase and display statistics.
-
+Analyze the rulebase and display statistics. Supports filtering by status and tags.
 ```bash
-# JSON output (default)
-rule-intelligence-mcp analyze \
-  -r rulebase.json \
-  -f json
-
-# Markdown report
-rule-intelligence-mcp analyze \
-  --rulebase rulebase.json \
-  --format md
+rule-intelligence-mcp analyze -r rulebase.json --status active
+rule-intelligence-mcp analyze -r rulebase.json --tag php
+rule-intelligence-mcp analyze -r rulebase.json --tag php,style --status active
+rule-intelligence-mcp analyze --rulebase rulebase.json --format md
 ```
 
 #### validate
-
 Validate the rulebase against the JSON schema.
-
 ```bash
-rule-intelligence-mcp validate \
-  -r rulebase.json \
-  -s rule-schema.json
+rule-intelligence-mcp validate -r rulebase.json -s rule-schema.json
 ```
 
 #### edit <id>
-
-Update an existing rule by its ID.
-
+Update an existing rule by its ID. This also logs the edit to the memory bank.
 ```bash
-rule-intelligence-mcp edit rule-2 \
-  --title "Use parameterized queries" \
-  --severity high \
-  --tags security,database
+rule-intelligence-mcp edit rule-2 --title "Use parameterized queries" --severity high --tags security,database
 ```
 
 #### suggest
-
-Request new rule suggestions via the OpenAI LLM.
-
+Request new rule suggestions via the OpenAI LLM. Suggestions are logged to the memory bank.
 ```bash
-rule-intelligence-mcp suggest \
-  -r rulebase.json
+# Requires OPENAI_API_KEY environment variable
+rule-intelligence-mcp suggest -r rulebase.json
 ```
 
 #### watch
-
 Watch the rulebase file and re-run analysis on changes.
-
 ```bash
-rule-intelligence-mcp watch \
-  -r rulebase.json
+rule-intelligence-mcp watch -r rulebase.json
 ```
 
 #### memory:list
-
 List stored interaction history (suggestions, edits).
-
 ```bash
-rule-intelligence-mcp memory:list \
-  --limit 5
+rule-intelligence-mcp memory:list --limit 5
 ```
 
 #### memory:clear
-
 Clear the memory bank and remove all stored interactions.
-
 ```bash
 rule-intelligence-mcp memory:clear
 ```
 
-## Project Structure
+## Memory Bank
+- The memory bank (`memory.json`) stores all `edit` and `suggest` interactions with timestamps.
+- Use `memory:list` to review history and `memory:clear` to reset.
+- Useful for audit trails and LLM context.
 
+## OpenAI API Key
+- The `suggest` command requires an OpenAI API key.
+- Set it via environment variable: `export OPENAI_API_KEY=sk-...`
+- If not set, the suggest integration test is skipped.
+
+## Testing
+- Run all tests (unit + integration):
+  ```bash
+  npm test
+  ```
+- Tests cover:
+  - Core analysis logic (`lib/analyze.test.ts`)
+  - CLI commands and memory bank (`lib/cli.integration.test.ts`)
+  - LLM suggest (if API key is set)
+
+## Using Your Own Rulebase
+- Copy `rulebase-sample.json` and edit as needed.
+- Validate with:
+  ```bash
+  rule-intelligence-mcp validate -r myrules.json
+  ```
+- Analyze with:
+  ```bash
+  rule-intelligence-mcp analyze -r myrules.json
+  ```
+
+## Error Handling
+- Invalid rulebases or schema errors are shown in the CLI with details.
+- Example:
+  ```
+  Rulebase validation failed:
+  [ { instancePath: '/0', message: 'must have required property ...' } ]
+  ```
+- Fix your JSON or schema and re-run the command.
+
+## Project Structure
 ```
 rule-intelligence-mcp/
-├── index.ts             # CLI entry point
-├── rule-schema.json     # JSON schema for the rulebase
-├── rulebase-sample.json # Sample rulebase
-├── memory.json          # Memory bank storage (auto-generated)
+├── index.ts                 # CLI entry point
+├── rule-schema.json         # JSON schema for the rulebase
+├── rulebase-sample.json     # Sample rulebase
+├── memory.json              # Memory bank storage (auto-generated)
 ├── lib/
-│   ├── analyze.ts       # Analysis and validation functions
-│   └── memory.ts        # Memory storage for interactions
-├── tsconfig.json        # TypeScript configuration
-├── package.json         # Node project metadata & scripts
-└── README.md            # This documentation
+│   ├── analyze.ts           # Analysis and validation functions
+│   ├── memory.ts            # Memory storage for interactions
+│   ├── analyze.test.ts      # Unit tests for analysis
+│   └── cli.integration.test.ts # Integration tests for CLI
+├── tsconfig.json            # TypeScript configuration
+├── package.json             # Node project metadata & scripts
+├── LICENSE                  # License
+└── README.md                # This documentation
 ```
 
 ## Contributing
-
 1. Fork the repository
 2. Create a branch named `feature/...`
 3. Implement your changes and write unit tests
 4. Open a pull request
 
 ## License
-
 MIT © Michael Tittmar

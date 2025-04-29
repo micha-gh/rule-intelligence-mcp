@@ -9,7 +9,8 @@
       "category": { "type": "string" },
       "content": { "type": "string" },
       "severity": { "type": "string" },
-      "tags": { "type": "array", "items": { "type": "string" } }
+      "tags": { "type": "array", "items": { "type": "string" } },
+      "status": { "type": "string" }
     },
     "required": ["id", "title", "category", "content"],
     "additionalProperties": false

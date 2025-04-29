@@ -39,12 +39,29 @@ const argv = yargs(hideBin(process.argv))
     default: 'json',
     description: 'Output format (json or md)'
   })
+  .option('status', {
+    type: 'string',
+    description: 'Filter rules by status (e.g. active, deprecated)'
+  })
+  .option('tag', {
+    type: 'string',
+    description: 'Filter rules by tag (comma-separated for multiple)'
+  })
   .command(
     'analyze',
     'Analyze the rulebase',
     () => {},
     args => {
-      const rb = loadRulebase(args.rulebase as string);
+      let rb = loadRulebase(args.rulebase as string);
+      // Filter by status
+      if (args.status) {
+        rb = rb.filter((r: any) => r.status === args.status);
+      }
+      // Filter by tag(s)
+      if (args.tag) {
+        const tags = (args.tag as string).split(',').map(t => t.trim());
+        rb = rb.filter((r: any) => Array.isArray(r.tags) && tags.some(tag => r.tags.includes(tag)));
+      }
       const { valid, errors } = validateRulebase(rb, args.schema as string);
       if (!valid) {
         console.error('Rulebase validation failed:');
