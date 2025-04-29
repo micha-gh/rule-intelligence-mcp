@@ -16,6 +16,7 @@ import {
   formatMarkdown,
   AnalysisResult
 } from './lib/analyze';
+import { loadHistory, appendInteraction, clearHistory } from './lib/memory';
 
 const argv = yargs(hideBin(process.argv))
   .scriptName('rule-intelligence-mcp')
@@ -106,11 +107,16 @@ const argv = yargs(hideBin(process.argv))
         process.exit(1);
       }
       const rule = rb[idx];
+      const changes: Record<string, any> = {};
       ['title', 'category', 'content', 'severity', 'tags'].forEach(key => {
-        if (args[key]) (rule as any)[key] = args[key];
+        if (args[key]) {
+          (rule as any)[key] = args[key];
+          changes[key] = args[key];
+        }
       });
       fs.writeFileSync(abs, JSON.stringify(rb, null, 2), 'utf-8');
       console.log(`Rule ${args.id} updated.`);
+      appendInteraction('edit', { id: args.id, changes });
     }
   )
   .command(
@@ -119,8 +125,12 @@ const argv = yargs(hideBin(process.argv))
     () => {},
     async args => {
       const rb = loadRulebase(args.rulebase as string);
+      const history = loadHistory(5);
       const openai = new OpenAI();
-      const prompt = `Here is the current rulebase: ${JSON.stringify(rb, null, 2)}\n\nPlease suggest 3 new rules, each with id, title, category, content, severity, tags in JSON array format.`;
+      let prompt = history.length
+        ? `Previous interactions: ${JSON.stringify(history, null, 2)}\n\nHere is the current rulebase: ${JSON.stringify(rb, null, 2)}`
+        : `Here is the current rulebase: ${JSON.stringify(rb, null, 2)}`;
+      prompt += `\n\nPlease suggest 3 new rules, each with id, title, category, content, severity, tags in JSON array format.`;
       try {
         const response = await openai.chat.completions.create({
           model: 'gpt-3.5-turbo',
@@ -131,6 +141,7 @@ const argv = yargs(hideBin(process.argv))
         });
         const suggestions = response.choices?.[0]?.message?.content;
         console.log(suggestions);
+        appendInteraction('suggest', suggestions);
       } catch (err: any) {
         console.error('OpenAI request failed:', err.message);
         process.exit(1);
@@ -165,6 +176,24 @@ const argv = yargs(hideBin(process.argv))
         };
         console.log(JSON.stringify(result, null, 2));
       });
+    }
+  )
+  .command(
+    'memory:list',
+    'List saved memory interactions',
+    y => y.option('limit', { alias: 'l', type: 'number', describe: 'Max entries to show' }),
+    args => {
+      const entries = loadHistory(args.limit as number);
+      console.log(JSON.stringify(entries, null, 2));
+    }
+  )
+  .command(
+    'memory:clear',
+    'Clear saved memory interactions',
+    () => {},
+    () => {
+      clearHistory();
+      console.log('Memory cleared.');
     }
   )
   .demandCommand(1, 'Please specify a command')

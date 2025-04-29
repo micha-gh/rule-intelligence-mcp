@@ -10,6 +10,7 @@ Ein **Rule Intelligence MCP**-Tool (Node.js + TypeScript) zur Analyse, Validieru
 - Interaktives Editieren von Regeln per CLI
 - Automatisierte Regel-Suggestions via OpenAI LLM
 - Watch-Modus zur Live-Analyse bei Dateiänderungen
+- Memory-Bank zur Speicherung von Interaktionen (memory:list, memory:clear)
 
 ## Quickstart
 
@@ -103,6 +104,21 @@ Beobachtet die Rulebase-Datei und führt bei jeder Änderung eine Analyse aus.
 ```bash
 rule-intelligence-mcp watch \
   -r rulebase.json
+```
+
+#### memory:list
+Listet gespeicherte Memory-Interaktionen (z.B. Vorschläge und Edits).
+
+```bash
+rule-intelligence-mcp memory:list \
+  --limit 5
+```
+
+#### memory:clear
+Leert die Memory-Bank und entfernt alle gespeicherten Interaktionen.
+
+```bash
+rule-intelligence-mcp memory:clear
 ```
 
 ## Projektstruktur
