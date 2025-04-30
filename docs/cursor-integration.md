@@ -1,81 +1,81 @@
-# Integration von Rule Intelligence MCP in Cursor AI
+# Integrating Rule Intelligence MCP with Cursor AI
 
-## Einleitung
+## Introduction
 
-Mit Cursor AI kannst du eigene CLI-Tools als sogenannte "Custom Tools" direkt in deine Entwicklungsumgebung einbinden. So kannst du Rulebases mit rule-intelligence-mcp direkt aus Cursor heraus analysieren, validieren und bearbeiten – ohne die IDE zu verlassen.
+With Cursor AI, you can add your own CLI tools as "Custom Tools" directly into your development environment. This allows you to analyze, validate, and edit rulebases with rule-intelligence-mcp right from within Cursor—no need to leave your IDE.
 
-## Vorteile
-- Schnelle Rulebase-Analyse per Shortcut oder Kontextmenü
-- Automatische Validierung beim Speichern/Committen
-- Integration in eigene Cursor-Workflows (z.B. mit Memory-Bank, Plugins, LLM)
+## Benefits
+- Fast rulebase analysis via shortcut or context menu
+- Automatic validation on save/commit
+- Integration into your own Cursor workflows (e.g. with memory bank, plugins, LLM)
 
-## Schritt-für-Schritt-Anleitung
+## Step-by-Step Guide
 
-### 1. Voraussetzungen
-- Node.js ≥ 14 installiert
-- Das Projekt (rule-intelligence-mcp) ist lokal geklont und mit `npm install` eingerichtet
+### 1. Prerequisites
+- Node.js ≥ 14 installed
+- The rule-intelligence-mcp project cloned locally and set up with `npm install`
 
-### 2. MCP-Tool testen
-Stelle sicher, dass das CLI funktioniert:
+### 2. Test the MCP tool
+Make sure the CLI works:
 ```bash
 npx ts-node index.ts analyze -r examples/rulebase-minimal.json
 ```
 
-### 3. Cursor öffnen und Custom Tool anlegen
-1. Öffne Cursor
-2. Gehe zu **Settings → Custom Tools**
-3. Klicke auf **Add Tool**
+### 3. Open Cursor and add a Custom Tool
+1. Open Cursor
+2. Go to **Settings → Custom Tools**
+3. Click **Add Tool**
 
-#### Beispiel-Konfiguration
+#### Example Configuration
 - **Name:** Rule Intelligence MCP
 - **Command:**
   ```
-  npx ts-node /ABSOLUTER/PFAD/ZU/index.ts analyze -r $file --format-in $ext --output md
+  npx ts-node /ABSOLUTE/PATH/TO/index.ts analyze -r $file --format-in $ext --output md
   ```
-  (Passe den Pfad zu deinem Projekt an. `$file` ist die aktuell geöffnete Datei, `$ext` deren Extension.)
+  (Adjust the path to your project. `$file` is the currently opened file, `$ext` its extension.)
 - **Working Directory:**
-  - `/ABSOLUTER/PFAD/ZU/DEINEM/PROJEKT`
+  - `/ABSOLUTE/PATH/TO/YOUR/PROJECT`
 - **Input:**
   - `Current File`
 - **Output:**
-  - `Show in Panel` oder `Replace Selection` (je nach Workflow)
+  - `Show in Panel` or `Replace Selection` (depending on your workflow)
 
-#### Optional: Weitere Befehle
-- Für Validierung:
+#### Optional: More Commands
+- For validation:
   ```
-  npx ts-node /ABSOLUTER/PFAD/ZU/index.ts validate -r $file --format-in $ext
+  npx ts-node /ABSOLUTE/PATH/TO/index.ts validate -r $file --format-in $ext
   ```
-- Für Plugins:
+- For plugins:
   ```
-  npx ts-node /ABSOLUTER/PFAD/ZU/index.ts analyze -r $file --format-in $ext --plugin plugins/conflict-check.js --output json
+  npx ts-node /ABSOLUTE/PATH/TO/index.ts analyze -r $file --format-in $ext --plugin plugins/conflict-check.js --output json
   ```
 
-### 4. Tool testen
-- Öffne eine Rulebase-Datei in Cursor (z.B. `.json`, `.yaml`, `.md`)
-- Führe das Custom Tool aus (z.B. per Kontextmenü oder Shortcut)
-- Das Ergebnis erscheint im Panel
+### 4. Test the Tool
+- Open a rulebase file in Cursor (e.g. `.json`, `.yaml`, `.md`)
+- Run the custom tool (via context menu or shortcut)
+- The result appears in the panel
 
-## Beispiel-Usecases
-- **Schnelle Analyse:** Markiere eine Datei und lasse sie direkt analysieren
-- **Pre-Commit-Check:** Integriere die Validierung in einen Git-Hook (über Cursor oder Shell)
-- **LLM-gestützte Vorschläge:** Nutze das Tool mit LLM-Optionen für automatische Rule-Vorschläge
+## Example Use Cases
+- **Quick analysis:** Select a file and analyze it directly
+- **Pre-commit check:** Integrate validation into a Git hook (via Cursor or shell)
+- **LLM-powered suggestions:** Use the tool with LLM options for automatic rule suggestions
 
 ## Troubleshooting
-- **Fehler: Modul nicht gefunden:**
-  - Prüfe, ob der Pfad zu `index.ts` stimmt und alle Abhängigkeiten installiert sind (`npm install`)
-- **gray-matter/js-yaml fehlt:**
-  - Installiere fehlende Pakete mit `npm install gray-matter js-yaml`
-- **Node-Version zu alt:**
-  - Aktualisiere Node.js auf ≥ 14
-- **Pfad-Probleme:**
-  - Nutze absolute Pfade in der Tool-Konfiguration
+- **Error: Module not found:**
+  - Check that the path to `index.ts` is correct and all dependencies are installed (`npm install`)
+- **gray-matter/js-yaml missing:**
+  - Install missing packages with `npm install gray-matter js-yaml`
+- **Node version too old:**
+  - Update Node.js to ≥ 14
+- **Path issues:**
+  - Use absolute paths in the tool configuration
 
-## Tipps
-- Du kannst mehrere Custom Tools für verschiedene Befehle (analyze, validate, edit) anlegen
-- Nutze die Output-Optionen von MCP (`--output md`, `--output json`) für die beste Darstellung in Cursor
-- Plugins und Memory-Bank funktionieren auch in Cursor, wenn die Pfade stimmen
+## Tips
+- You can add multiple custom tools for different commands (analyze, validate, edit)
+- Use MCP's output options (`--output md`, `--output json`) for best display in Cursor
+- Plugins and the memory bank also work in Cursor if the paths are correct
 
 ---
 
-**Fragen oder Probleme?**
-Öffne ein Issue im GitHub-Repo oder frage im Cursor-Discord! 
+**Questions or problems?**
+Open an issue on GitHub or ask in the Cursor Discord! 
