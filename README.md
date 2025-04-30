@@ -8,66 +8,40 @@
 
 ---
 
-## How to contribute
-
-Want to help? See [CONTRIBUTING.md](CONTRIBUTING.md) for how to open issues, submit PRs, and coding guidelines.
-
-## Code of Conduct
-
-Please read and follow our [Code of Conduct](CODE_OF_CONDUCT.md).
-
-## Changelog
-
-See [CHANGELOG.md](CHANGELOG.md) for release notes and version history.
-
----
-
-## Overview
+## What is Rule Intelligence MCP?
 
 **Rule Intelligence MCP** is a flexible open-source CLI & library to analyze, validate, and manage any kind of rulebase – for any language, team, or workflow. It supports multiple formats, custom checks (plugins), AI integration, and more.
 
 ---
 
-## Features – What does this tool do for you?
+## Features
 
 - **Rulebase Analysis:**
   Find missing categories, duplicate rules, empty content, and other issues in your rules. Example: Detect if a coding guideline is missing a category or if two rules have the same title.
-
 - **Schema Validation:**
   Check your rules against any JSON schema to ensure consistency and completeness. Example: Enforce that every rule has an `id`, `title`, and `category`.
-
 - **Flexible Filtering:**
   Filter rules by status (e.g. active, deprecated), tags, or custom fields. Example: List only active security rules for a release checklist.
-
 - **Multiple Output Formats:**
   Export results as JSON (for automation), Markdown (for docs), CSV (for Excel), or HTML (for reports). Example: Generate a Markdown summary for your team wiki.
-
 - **Interactive Editing:**
   Edit rules directly from the CLI, e.g. update a title or category without opening a text editor.
-
 - **Memory Bank (Change History):**
   All edits and suggestions are logged with timestamps. Example: Track who changed what and when.
-
 - **AI Integration (LLM):**
   Get suggestions for new or improved rules from AI models like OpenAI GPT. Example: "Suggest 3 new security rules for my project."
-
 - **Live Watch Mode:**
   Automatically re-analyze your rulebase when files change. Example: Get instant feedback while editing.
-
 - **Plugin System:**
   Write your own checks/analysis in JavaScript. Example: Plugin that finds conflicting rules.
-
 - **Flexible Input:**
   Supports JSON, YAML, TOML, and Markdown (frontmatter). Example: Use the tool for rules in code, docs, or config files.
-
 - **Tested & CI-ready:**
   Includes unit and integration tests, ideal for CI pipelines to enforce rule quality before merging code.
 
 ---
 
 ## Quickstart
-
-**Get started in minutes:**
 
 ### Prerequisites
 - Node.js ≥ 14
@@ -82,13 +56,15 @@ npm install
 
 ---
 
-## CLI Usage – How to use the tool
+## Usage
+
+### CLI Usage
 
 ```bash
 rule-intelligence-mcp <command> [options]
 ```
 
-### Common CLI Options (Examples)
+#### Common CLI Options
 
 | Option                | Description                                                      | Example                                  |
 |----------------------|------------------------------------------------------------------|------------------------------------------|
@@ -104,9 +80,7 @@ rule-intelligence-mcp <command> [options]
 | `--llm-model`        | LLM model name                                                  | `--llm-model gpt-4`                      |
 | `--memory`           | Path to memory bank file                                         | `--memory .data/mem.json`                |
 
----
-
-### Example Commands
+#### Example Commands
 
 ```bash
 # Analyze a rulebase (format usually auto-detected)
@@ -131,8 +105,9 @@ rule-intelligence-mcp watch -r myrules.json
 
 ---
 
-## Flexible Schema & Rulebase Format
+## Advanced Usage
 
+### Flexible Schema & Rulebase Format
 - Use any JSON schema for validation (`--schema my-schema.json`)
 - Rulebases can be JSON, YAML, TOML, or Markdown (with frontmatter)
 - Format is usually auto-detected, but can be set with `--format-in`
@@ -145,45 +120,33 @@ rule-intelligence-mcp watch -r myrules.json
   rule-intelligence-mcp analyze -r rules.md --format-in md
   ```
 
----
-
-## Output Formats
-
+### Output Formats
 - `--output json` (default, for automation)
 - `--output md` (Markdown, for docs)
 - `--output csv` (Excel/tables)
 - `--output html` (reports)
 
----
-
-## Plugins: Custom Checks & Analysis
-
+### Plugins: Custom Checks & Analysis
 - Write your own checks as a JS file: `--plugin ./my-check.js`
 - The plugin receives the rulebase and the current analysis result as input and returns an object to merge into the output
 - See `plugins/example-plugin.js` as a template
 - **Example:** Count deprecated rules and add the result
 
----
-
-## LLM Provider (AI) Configuration
-
+### LLM Provider (AI) Configuration
 - Use any LLM provider: OpenAI, Azure, local, etc.
 - Flags: `--llm-provider`, `--llm-api-url`, `--llm-model`
 - Example: `rule-intelligence-mcp suggest --llm-provider openai --llm-model gpt-4`
 - Install required packages first (see docs)
 - Set API keys as environment variables (e.g. `OPENAI_API_KEY`)
 
----
-
-## Memory Bank
-
+### Memory Bank
 - Stores all `edit` and `suggest` interactions with timestamps
 - Location and backend are configurable (`--memory memory.json`, `--memory .data/mem.json`)
 - Manage with `memory:list` and `memory:clear`
 
 ---
 
-## Testing & CI
+## Testing & Continuous Integration
 
 - Run all tests: `npm test`
 - Coverage: `npm test -- --coverage`
@@ -191,9 +154,7 @@ rule-intelligence-mcp watch -r myrules.json
 
 ---
 
-## Testing with Example Rulebases, Schemas, and Plugins
-
-**Get to know the tool with real examples:**
+## Examples & Test Data
 
 - The `examples/` folder contains various rulebases (minimal, complex, invalid, markdown)
 - The `plugins/` folder contains example plugins
@@ -209,8 +170,30 @@ bash test/examples.error.test.sh
 
 ---
 
-## Integration with Cursor AI
+## Integration
+
+### Integration with Cursor AI
 
 You can use Rule Intelligence MCP as a Custom Tool in [Cursor AI](https://www.cursor.so/). This allows you to analyze and validate rulebases directly from your IDE.
 
 **Step-by-step guide:** [docs/cursor-integration.md](docs/cursor-integration.md)
+
+---
+
+## Project Meta
+
+### How to contribute
+
+Want to help? See [CONTRIBUTING.md](CONTRIBUTING.md) for how to open issues, submit PRs, and coding guidelines.
+
+### Code of Conduct
+
+Please read and follow our [Code of Conduct](CODE_OF_CONDUCT.md).
+
+### Changelog
+
+See [CHANGELOG.md](CHANGELOG.md) for release notes and version history.
+
+### License
+
+MIT © Michael Tittmar
