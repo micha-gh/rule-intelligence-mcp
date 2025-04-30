@@ -1,7 +1,16 @@
 {
   "name": "rule-intelligence-mcp",
   "version": "0.1.0",
-  "description": "Rule Intelligence MCP server for analyzing rulebases via stdio (Cursor integration)",
+  "description": "Universal CLI and library to analyze, validate, and manage rulebases. Supports custom schemas, plugins, LLM, and more.",
+  "keywords": ["rulebase", "cli", "validation", "schema", "plugin", "ai", "llm", "yaml", "json", "markdown"],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/micha-gh/rule-intelligence-mcp.git"
+  },
+  "bugs": {
+    "url": "https://github.com/micha-gh/rule-intelligence-mcp/issues"
+  },
+  "homepage": "https://github.com/micha-gh/rule-intelligence-mcp#readme",
   "main": "index.ts",
   "scripts": {
     "start": "ts-node index.ts",
